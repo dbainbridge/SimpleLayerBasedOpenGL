@@ -28,6 +28,30 @@
     return YES;
 }
 
+
+- (NSOpenGLPixelFormat *)openGLPixelFormatForDisplayMask:(uint32_t)mask
+{
+    NSOpenGLPixelFormatAttribute attrs[] = {
+        // Specifying "NoRecovery" gives us a context that cannot fall back to the software renderer.  This makes the View-based context a compatible with the layer-backed context, enabling us to use the "shareContext" feature to share textures, display lists, and other OpenGL objects between the two.
+        NSOpenGLPFANoRecovery, // Enable automatic use of OpenGL "share" contexts.
+        NSOpenGLPFAColorSize, 24,
+        NSOpenGLPFAAlphaSize, 8,
+        NSOpenGLPFADepthSize, 16,
+        NSOpenGLPFADoubleBuffer,
+        NSOpenGLPFAScreenMask,
+        NSOpenGLPFAAccelerated,
+        NSOpenGLPFAOpenGLProfile,
+        NSOpenGLProfileVersionLegacy,
+        // If you want OpenGL 3.2 support replace NSOpenGLProfileVersionLegacy with
+        // NSOpenGLProfileVersion3_2Core, 
+        0
+    };
+    
+    NSOpenGLPixelFormat* pixelFormat = [[NSOpenGLPixelFormat alloc] initWithAttributes:attrs];
+    
+    return pixelFormat;
+}
+
 - (void)drawInOpenGLContext:(NSOpenGLContext *)context pixelFormat:(NSOpenGLPixelFormat *)pixelFormat forLayerTime:(CFTimeInterval)timeInterval displayTime:(const CVTimeStamp *)timeStamp
 {
     glClearColor(.0f, .0f, .0f, 1.0f);
